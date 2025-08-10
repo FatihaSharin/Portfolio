@@ -1,0 +1,61 @@
+/* in the body, I'm defining various parent elements like the usual background color if the pic doesn't work for any section, etc. */
+body {
+    height: 100%;
+    width: 100%;
+    background-color: #fffaf2; /* default color if the pics don't load */
+    color: #2c6249;
+    font-family: "Roboto", sans-serif;
+    overflow-x: hidden; /* removing the horizontal scroll bar cuz' it's not needed */
+}
+
+.text-center {
+    text-align: center; /* texts will be centered with this class */
+}
+
+/* these are used to set everything in the center */
+.container {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+button {
+    background-color: #ffb566;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #ffc099;
+}
+
+/* the disabled class is added to the main class to apply the following css */
+button.disabled {
+    filter: saturate(50%);
+    cursor: not-allowed;
+}
+
+/* each box in the webpage is divided into sections for.... design purposes!! */
+section {
+    background-color: #fffaf2;
+    background-image: url('Screenshot 2023-08-02 120222.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* the backroung squad 🔝 😎 */
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+p {
+    color: #2c6249;
+}
