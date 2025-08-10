@@ -4,7 +4,7 @@ body {
   flex-direction: column;
   height: 100vh;
   margin: 0;
-  background-image: url('pexels-photo-1453808.webp');
+  background-image: url('pexels-photo-12507902.webp');
   background-repeat: none;
   background-size: cover;
   background-position: center;
@@ -13,8 +13,25 @@ body {
   position: relative;
 }
 
-header{
+.user-select{
+  user-select: none;
+}
+
+.text-center{
+  text-align: center;
+  padding-top: 30px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.des{
   padding-left: 20px;
+  padding-right: 20px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.apr-dark{
+  color: #05050545;
 }
 
 #liveToastBtn{
@@ -39,9 +56,8 @@ header{
   color: rgb(166, 133, 194);
 }
 
-.sub-quote{
-  color: rgb(145, 141, 141);
-  font-weight: bold;
+header{
+  padding-left: 20px;
 }
 
 .m-logo{
@@ -65,19 +81,12 @@ header{
   color: red;
 }
 
-#home-page{
-  text-align: center;
-  padding-top: 30px;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
 .header {
   position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   padding: 0 2rem;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.03);
@@ -87,18 +96,31 @@ header{
   gap: 3rem;
 }
 
+.accordion-item{
+  background: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+}
+.accordion button{
+  background: rgb(42, 34, 34);
+  color: aliceblue;
+  font-weight: bolder;
+}
+
 .navbar {
   display: flex;
   align-items: center;
   height: 100%;
   margin: 0 auto;
   overflow: hidden;
+  position: sticky;
+  z-index: 100;
+  top: 0;
 }
 .navbar__menu {
   position: relative;
   display: flex;
 }
-.navbar__menu .navbar__link {
+.navbar__menu .navbar__link{
   text-decoration: none;
 }
 .navbar__link {
@@ -110,7 +132,7 @@ header{
   justify-content: center;
   height: 3.5rem;
   width: 10rem;
-  color: aliceblue;
+  color: #fff;
   transition: 250ms ease all;
   width: 10rem;
   text-transform: uppercase;
@@ -337,6 +359,7 @@ header{
 .navbar__item:first-child:nth-last-child(11):nth-child(10):hover ~ li:last-child:before, .navbar__item:first-child:nth-last-child(11) ~ li:nth-child(10):hover ~ li:last-child:before {
   left: 81.8181818182%;
 }
+
 .navbar__item:first-child:nth-last-child(11):last-child:hover:before, .navbar__item:first-child:nth-last-child(11) ~ li:last-child:hover:before {
   left: 90.9090909091%;
 }
@@ -351,8 +374,9 @@ li::marker {
 }
 
 
+
 .header-border {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(59, 47, 47, 0.5);
   padding: 10px;
 }
 
@@ -595,8 +619,4 @@ footer {
 footer p{
   margin: 0;
   font-size: 14px;
-}
-
-.user-select{
-  user-select: none;
 }
