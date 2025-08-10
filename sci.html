@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quizzz</title>
-  <link href="style.css" rel="stylesheet" type="text/css">
+  <link href="sci.css" rel="stylesheet" type="text/css">
   <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> -->
 </head>
 
@@ -15,7 +15,7 @@
       <a href="index.html" class="logo disable-selection">Quizzz</a>
       <nav class="navbar disable-selection">
         <ul>
-          <li><a href="index.html" class="active disable-selection" target="_self">Home</a></li>
+          <li><a href="index.html" class="disable-selection" target="_self">Home</a></li>
           
           <li><a href="about.html" class="disable-selection" target="_self">About</a></li>
           
@@ -29,7 +29,7 @@
                 <a href="prog.html" class="disable-selection">Programming</a>
               </li>
               <li>
-                <a href="sci.html" class="disable-selection">Science</a>
+                <a href="sci.html" class="active disable-selection">Science</a>
               </li>
             </ul>
           </li>
@@ -81,7 +81,7 @@
         <div class="result-box">
           <h2>Quiz Result!</h2>
           <div class="per-con">
-            <div class="cir-progress">
+            <div class="cir-progress" style="background: conic-gradient(#8da0ad 180deg, #86857424 0deg);">
               <span class="progress-value">0%</span>
             </div>
 
@@ -104,11 +104,11 @@
   </main>
 
   <div class="popup-info disable-selection">
-    <h2 class="disable-selection">A Quick Say</h2>
-    <span class="info disable-selection">1. After you click 'Continue', you will be given the questions.</span>
-    <span class="info disable-selection">2. Read each question carefully and select your answer from the options provided.</span>
-    <span class="info disable-selection">3. After selecting your answer, you will receive immediate feedback indicating whether it is correct or incorrect.</span>
-    <span class="info disable-selection">4. Feel free to play again to improve your score!</span>
+    <h2 class="disable-selection">A Quick Say - Topic: History</h2>
+    <span class="info disable-selection"><span>1.</span> After you click 'Continue', you will be given the questions.</span>
+    <span class="info disable-selection"><span>2.</span> Read each question carefully and select your answer from the options provided.</span>
+    <span class="info disable-selection"><span>3.</span> After selecting your answer, you will receive immediate feedback indicating whether it is correct or incorrect.</span>
+    <span class="info disable-selection"><span>4.</span>. Feel free to play again to improve your score!</span>
     <p class="disable-selection">Enjoy Quizzz and have fun!</p>
 
     <div class="btn-group">
@@ -120,7 +120,7 @@
 
   
   <script src="script.js"></script>
-  <script src="questions.js"></script>
+  <script src="sci.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
 </body>
 

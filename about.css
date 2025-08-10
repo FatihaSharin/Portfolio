@@ -20,7 +20,7 @@ body{
 }
 
 .main{
-  background: url('Screenshot 2023-07-02 161841.png') no-repeat;
+  background: url('Screenshot 2023-10-28 131458.png') no-repeat;
   background-size: cover;
   /* background-position: center; */
   pointer-events: auto;
@@ -580,7 +580,7 @@ nav ul li a.active{
   position: relative;
   width: 250px;
   height: 250px;
-  background: conic-gradient(#000000 3.6deg, rgba(255, 255, 255, 0.1) 0deg);
+  background: conic-gradient(#ff0059 3.6deg, rgba(255, 255, 255, 0.1) 0deg);
   border-radius: 50%;
   display: flex;
   justify-content: center;
