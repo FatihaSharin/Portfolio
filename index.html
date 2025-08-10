@@ -1,36 +1,863 @@
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8"> 
-  <meta name="viewport" content="width=device-width">
-  <title>BoredLings</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+    		padding: 0;
+			background-color: #121212;
+    		color: #ffffff;
+        }
+
+		.disable-selection{
+			user-select: none;
+		}
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+			padding: 1rem;
+			background-color: #1e1e1e;
+			border-bottom: 1px solid #333;
+        }
+
+		.header h1{
+			font-size: 1.5rem;
+			color: #e77b7b;
+			font-weight: bold;
+		}
+
+		.create-character-btn{
+			background: #e77b7b;
+			border: none;
+			border-radius: 7px;
+			color: #ffffff;
+			cursor: pointer;
+			font-size: 1.25em;
+			font-weight: bold;
+			margin-bottom: 1em;
+			padding: 0.75em 0;
+			width: 200px;
+			transition: background 0.5s ease;
+		}
+
+		.create-character-btn:hover {
+			animation: colorCycle 0.75s infinite;
+			animation-timing-function: step-end;
+		}
+
+		@keyframes colorCycle {
+			0% { background: #e77b7b; } /* Original red */
+			33% { background: #7ba4e7; } /* Blue */
+			66% { background: #7be77b; } /* Green */
+			100% { background: #e77b7b; } /* Back to red */
+		}
+		
+		#deleteModal{
+			position: fixed;
+			z-index: 999999;
+		}
+
+		#deleteModal .button {
+			margin: 10px;
+			width: 120px;
+		}
+
+		#deleteModal .button:first-child {
+			background: #e77b7b !important;
+		}
+
+		#deleteModal .button:last-child {
+			background: #7ba4e7 !important;
+		}
+
+		#characterDetails img {
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			margin: 0 auto 20px;
+			display: block;
+			object-fit: cover;
+		}
+
+		#charactersContainer {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 15px;
+		}
+
+        .character-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+			margin-left: 45px;
+            width: 320px;
+			transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+			transform: translateY(0);
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+			z-index: 10;
+			align-items: center;
+			gap: 20px;
+			display: inline-flex !important;
+			flex-direction: row-reverse; 
+			justify-content: space-between;
+			align-items: flex-start;
+        }
+
+		.pfp-container {
+			width: 80px;
+			height: 80px;
+			border-radius: 50%;
+			background: #e77b7b;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+			flex-shrink: 0;
+			/* left: 200px;
+			top: 50px; */
+			margin-left: 15px;
+		}
+
+		.pfp-image {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.pfp-upload {
+			position: absolute;
+			opacity: 0;
+			width: 100%;
+			height: 100%;
+			cursor: pointer;
+		}
+
+		.card-content {
+			flex: 1;
+			min-width: 0;
+		}
+		
+		.button-group {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.character-card button {
+			background: #e77b7b;
+			border: 1px solid #ccc;
+			border-radius: 7px;
+			color: #ffffff;
+			cursor: pointer;
+			font-size: 1em;
+			font-weight: bold;
+			margin-bottom: 5px;
+			margin-top: 10px;
+			padding: 0.75em 0;
+			width: 90px;
+			display: inline-block;
+		}
+
+		.character-card button:nth-child(5) { /* Edit button */
+    		background: #7ba4e7;
+		}
+
+		.character-card button:nth-child(5):hover { /* Edit button */
+    		background: #678ac2;
+		}
+
+		.character-card button:nth-child(4) { /* View button */
+			background: #e7b67b;
+		}
+
+		.character-card button:nth-child(4):hover { /* View button */
+			background: #ed9b35;
+		}
+
+		.character-card button:nth-child(6) { /* Delete button */
+			background: #e35c5c;
+		}
+
+		.character-card button:nth-child(6):hover { /* Delete button */
+			background: #f83535;
+		}
+
+		.character-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+		}
+
+		.character-card small {
+			display: block;
+			color: #888;
+			font-size: 0.9em;
+			margin-top: 5px;
+			user-select: none;
+		}
+
+        .modal {
+            display: none;
+            position: fixed;
+			overflow-y: auto;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+			z-index: 999;
+        }
+
+        .modal-content {
+            background-color: #000000;
+            color: #efefef;
+            margin: 15% auto;
+            padding: 20px;
+			border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            overflow-y: auto;
+			position: relative;
+        }
+
+        fieldset {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        legend {
+            font-weight: bold;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"]:not(.profiles__title),
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            width: calc(100% - 12px);
+            height: 30px;
+            border: none;
+            outline: none;
+            padding: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            background-color: #1e1e1e;
+            color: #efefef;
+        }
+        textarea {
+            height: 80px;
+        }
+
+        .button {
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+		.modal-content {
+			position: relative;
+		}
+
+		.nav-arrows {
+			position: fixed;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 790px;
+			display: flex;
+			justify-content: space-between;
+			pointer-events: none;
+			margin: -45px;
+		}
+
+		.arrow {
+			pointer-events: all;
+			cursor: pointer;
+			background: #e77b7b;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 24px;
+			opacity: 0.8;
+			transition: opacity 0.3s;
+		}
+
+		.arrow:hover {
+			opacity: 1;
+		}
+
+		fieldset {
+			display: none;
+		}
+
+		fieldset.active {
+			display: block;
+		}
+    </style>
 </head>
-
 <body>
-    <section id="section1" class="text-center container">
-        <p class="text1">Hey dude, wanna hear a cool song?</p>
-        <button class="button1" type="button" onclick="changeText1()">Click here to hear it</button>
-    </section>
-    
-    <section id="section2" class="text-center container">
-        <p class="text2">Or if you don't wanna hear a song but a joke,</p>
-        <button class="button2" type="button" onclick="changeText2()">Click here</button>
-    </section>
-    
-    <section id="section3" class="text-center container">
-        <p class="text3">If you don't wanna listen to any of them,</p>
-        <button class="button3" type="button" onclick="changeText3()">Click here</button>
-    </section>
-    
-    <section id="section4" class="text-center container">
-        <p class="text4"></p>
-        <button class="button4" type="button" onclick="changeText4()">...</button>
-    </section>    
-  
-  <script src="script.js"></script>
+	<!-- Delete modal -->
+	<div id="deleteModal" class="modal disable-selection">
+		<div class="modal-content" style="max-width: 400px; text-align: center;">
+			<h3>Confirm Delete</h3>
+			<p>Are you sure you want to delete this character?</p>
+			<button class="button" onclick="deleteCharacter(pendingDeleteId)" style="background: #e77b7b;">Yes, Delete</button>
+			<button class="button" onclick="closeModal()">Cancel</button>
+		</div>
+	</div>
 
+    <div class="header disable-selection">
+        <h1>Character Manager</h1>
+        <button class="button create-character-btn" onclick="openCreateModal()">Create Character</button>
+    </div>
+
+    <div id="charactersContainer"></div>
+
+    <!-- Create/Edit Modal -->
+    <div id="formModal" class="modal">
+		<div class="modal-content">
+			<h2>Character Form</h2>
+			<div class="nav-arrows disable-selection">
+				<div class="arrow prev">←</div>
+				<div class="arrow next">→</div>
+			</div>
+            <form id="characterForm" onsubmit="saveCharacter(event)">
+                <input type="hidden" id="characterId">
+                <fieldset class="active" data-section="basic">
+					<legend>Basic Information</legend>
+					<label for="name">Name:</label>
+					<input type="text" id="name" name="name" required>
+					<label for="au">AU:</label>
+					<input type="text" id="au" name="au" required>
+					<label for="nickname">Nickname(s):</label>
+					<input type="text" id="nickname" name="nickname">
+					<label for="age">Age:</label>
+					<input type="number" id="age" name="age">
+					<label for="birthday">Birthday:</label>
+					<input type="date" id="birthday" name="birthday">
+					<label for="gender">Gender:</label>
+					<input type="text" id="gender" name="gender">
+					<label for="pronouns">Pronouns:</label>
+					<input type="text" id="pronouns" name="pronouns">
+					<label for="ethnicity">Nationality/Ethnicity:</label>
+					<input type="text" id="ethnicity" name="ethnicity">
+					<label for="residence">Current Residence:</label>
+					<input type="text" id="residence" name="residence">
+					<label for="hometown">Hometown:</label>
+					<input type="text" id="hometown" name="hometown">
+					<label for="species">Species:</label>
+					<input type="text" id="species" name="species">
+					<label for="religion">Religion (sect):</label>
+					<input type="text" id="religion" name="religion">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="appearance">
+					<legend>Physical Appearance</legend>
+					<label for="height">Height:</label>
+					<input type="text" id = "height" name = "height">
+					<label for="build">Physical Built:</label>
+					<input type="text" id = "built" name = "built">
+					<label for="weight">Weight:</label>
+					<input type="text" id = "weight" name = "weight">
+					<label for="eye_color">Eye Color:</label>
+					<input type="text" id = "eye_color" name = "eye_color">
+					<label for="eye_shape">Eye Shape:</label>
+					<input type="text" id = "eye_shape" name = "eye_shape">
+					<label for="hair_color">Hair Color:</label>
+					<input type="text" id = "hair_color" name = "hair_color">
+					<label for="haircut">Hair Style/Cut:</label>
+					<input type="text" id = "haircut" name = "haircut">
+					<label for="skin_tone">Skin Tone:</label>
+					<input type="text" id = "skin_tone" name = "skin_tone">
+					<label for="skin_type">Skin Type:</label>
+					<input type="text" id = "skin_type" name = "skin_type">
+					<label for="geographical_adaptations">Geographical Adaptations:</label>
+					<input type="text" id = "geographical_adaptations" name = "geographical_adaptations">
+					<label for="distinguishing_features">Distinguishing Features:</label>
+					<input type="text" id = "distinguishing_features" name = "distinguishing_features" placeholder="E.g., scars, tattoos, birthmarks, etc.">
+					<label for="dressing">Dress Style:</label>
+					<input type="text" id = "dressing" name = "dressing">
+					<label for="accessories">Jewelries/Accessories:</label>
+					<input type="text" id = "accessories" name = "accessories">
+					<label for="voice">Voice:</label>
+					<input type="text" id = "voice" name = "voice" placeholder="E.g., pitch, tone, accent">
+					<label for="allergies">Allergies:</label>
+					<input type="text" id = "allergies" name = "allergies">
+					<label for="blood_type">Blood Type:</label>
+					<input type="text" id = "blood_type" name = "blood_type">
+					<label for="disabilities">Disabilities:</label>
+					<input type="text" id = "disabilities" name = "disabilities">
+					<label for="physical_illness">Physical Illnesses:</label>
+					<input type="text" id = "physical_illness" name = "physical_illness">
+					<label for="race">Race:</label>
+					<input type="text" id = "race" name = "race">
+					<label for="perfume">Perfume Choice:</label>
+					<input type="text" id = "perfume" name = "perfume">
+					<label for="posture">Walking Gait/Posture:</label>
+					<input type="text" id = "posture" name = "posture">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="life">
+					<legend>Age & Birthday</legend>
+					<label for="birth_place">Place of Birth:</label>
+					<input type="text" id = "birth_place" name = "birth_place">
+					<label for="zodiac">Zodiac:</label>
+					<input type="text" id = "zodiac" name = "zodiac" placeholder="E.g., sun, moon, rising">
+					<label for="death_day">Death Day:</label>
+					<input type="date" id = "death_day" name = "death_day">
+					<label for="death_cause">Cause of Death:</label>
+					<input type="text" id = "death_cause" name = "death_cause">
+					<label for="death_place">Place of Death:</label>
+					<input type="text" id = "death_place" name = "death_place">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="personality">
+					<legend>Personality</legend>
+					<label for="mbti">MBTI Type:</label>
+					<input type="text" id="mbti" name="mbti">
+					<label for="archetype">Character Archetype:</label>
+					<input type="text" id="archetype" name="archetype">
+					<label for="big_five">The Big Five Personality Type:</label>
+					<input type="text" id="big_five" name="big_five">
+					<label for="enneagram">Enneagram:</label>
+					<input type="text" id="enneagram" name="enneagram">
+					<label for="temperament">Temperament:</label>
+					<input type="text" id="temperament" name="temperament">
+					<label for="ist">IST:</label>
+					<input type="text" id="ist" name="ist" placeholder="E.g., optimist, pessimist, realist, opportunist, idealist, etc.">
+					<label for="positive_traits">Positive Traits:</label>
+					<input type="text" id="positive_traits" name="positive_traits">
+					<label for="negative_traits">Negative Traits:</label>
+					<input type="text" id="negative_traits" name="negative_traits">
+					<label for="leadership_style">Leadership Style:</label>
+					<input type="text" id="leadership_style" name="leadership_style">
+					<label for="quirks">Quirks/Habits:</label>
+					<input type="text" id="quirks" name="quirks">
+					<label for="fears">Fears:</label>
+					<input type="text" id="fears" name="fears">
+					<label for="phobias">Phobias:</label>
+					<input type="text" id="phobias" name="phobias">
+					<label for="sins">Seven Deadly Sins:</label>
+					<input type="text" id="sins" name="sins">
+					<label for="virtues">Seven Heavenly Virtues:</label>
+					<input type="text" id="virtues" name="virtues">
+					<label for="dreams">Ambitions/Dreams:</label>
+					<input type="text" id="dreams" name="dreams">
+					<label for="hobbies">Hobbies/Interest:</label>
+					<input type="text" id="hobbies" name="hobbies">
+					<label for="likes">Likes:</label>
+					<input type="text" id="likes" name="likes">
+					<label for="dislikes">Dislikes:</label>
+					<input type="text" id="dislikes" name="dislikes">
+					<label for="pet_peeves">Pet Peeves:</label>
+					<input type="text" id="pet_peeves" name="pet_peeves">
+					<label for="addictions">Addictions:</label>
+					<input type="text" id="addictions" name="addictions">
+					<label for="mental_illness">Mental Disorders:</label>
+					<input type="text" id="mental_illness" name="mental_illness">
+					<label for="hand_dominance">Hand Dominance:</label>
+					<input type="text" id="hand_dominance" name="hand_dominance">
+					<label for="ideals">Ideals:</label>
+					<input type="text" id="ideals" name="ideals">
+					<label for="how_they_see_themselves">How Do They See Themselves:</label>
+					<input type="text" id="how_they_see_themselves" name="how_they_see_themselves">
+					<label for="want_to_be_seen_as">How Do They Want To Be Seen:</label>
+					<input type="text" id="want_to_be_seen_as" name="want_to_be_seen_as">
+					<label for="how_others_see">How They Are Seen By Others:</label>
+					<input type="text" id="how_others_see" name="how_others_see">
+					<label for="core_symbol">Core Symbol:</label>
+					<input type="text" id="core_symbol" name="core_symbol">
+					<label for="sprititual_symbol">Spiritual/Inner Animal or Plant Symbol:</label>
+					<input type="text" id="sprititual_symbol" name="sprititual_symbol">
+					<label for="wounds">Core Wounds:</label>
+					<input type="text" id="wounds" name="wounds">
+					<label for="triggers">Triggers:</label>
+					<input type="text" id="triggers" name="triggers">
+					<label for="defense_mechanism">Defense Mechanism:</label>
+					<input type="text" id="defense_mechanism" name="defense_mechanism">
+					<label for="existential_beliefs">Existential Beliefs:</label>
+					<input type="text" id="existential_beliefs" name="existential_beliefs">
+					<label for="coping_mechanisms">Coping Mechanisms Under Stress:</label>
+					<input type="text" id="coping_mechanisms" name="coping_mechanisms">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="social">
+					<legend>Social Life</legend>
+					<label for="occupation">Occupation:</label>
+					<input type="text" id="occupation" name="occupation">
+					<label for="income">Yearly Income:</label>
+					<input type="text" id="income" name="income">
+					<label for="net_worth">Net Worth:</label>
+					<input type="text" id="net_worth" name="net_worth">
+					<label for="side_jobs">Side Jobs:</label>
+					<input type="text" id="side_jobs" name="side_jobs">
+					<label for="debt">Debt:</label>
+					<input type="text" id="debt" name="debt">
+					<label for="education">Education:</label>
+					<input type="text" id="education" name="education">
+					<label for="clubs">Clubs or Extracurriculars:</label>
+					<input type="text" id="clubs" name="clubs">
+					<label for="gpa">Grade Point Average (GPA):</label>
+					<input type="text" id="gpa" name="gpa">
+					<label for="reputation">Reputation:</label>
+					<input type="text" id="reputation" name="reputation" placeholder="E.g., regional, national, internation, etc.">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="relationships">
+					<legend>Relationships</legend>
+					<label for="parents">Parents:</label>
+					<input type="text" id="parents" name="parents">
+					<label for="children">Children:</label>
+					<input type="text" id="children" name="children">
+					<label for="friends">Friends:</label>
+					<input type="text" id="friends" name="friends" placeholder="E.g., close friends, best friends, childhood friends, etc.">
+					<label for="relationship_status">Relationship Status:</label>
+					<input type="text" id="relationship_status" name="relationship_status">
+					<label for="lovers">Significant Other:</label>
+					<input type="text" id="lovers" name="lovers">
+					<label for="romantic_interests">Romantic Interests:</label>
+					<input type="text" id="romantic_interests" name="romantic_interests">
+					<label for="pets">Pets:</label>
+					<input type="text" id="pets" name="pets">
+					<label for="love_languages">Love Languages:</label>
+					<input type="text" id="love_languages" name="love_languages">
+					<label for="relationship_history">Relationship History:</label>
+					<textarea id="relationship_history" name="relationship_history"></textarea>
+					<label for="family_dynamics">Family Dynamics:</label>
+					<textarea id="family_dynamics" name="family_dynamics" placeholder="General atmosphere of family relationships."></textarea>
+					<label for="respect_for_authority_figures">Respect for Authority Figures:</label>
+					<input type="text" id="respect_for_authority_figures" name="respect_for_authority_figures" placeholder="Do they repect of defy authority?">
+					<label for="friend_role">Role in Friend Group:</label>
+					<input type="text" id="friend_role" name="friend_role" placeholder="E.g., peacemaker, leader, mother, etc.">
+					<label for="relationship_role">Attachment Style in Relationships:</label>
+					<input type="text" id="relationship_role" name="relationship_role" placeholder="E.g., secure, anxious, jealous, etc.">
+					<label for="communication_style">Communication Style:</label>
+					<input type="text" id="communication_style" name="communication_style" placeholder="E.g., direct, passive-aggressive, etc.">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="background">
+					<legend>Background</legend>
+					<label for="childhood">Childhood:</label>
+					<textarea id="childhood" name="childhood"></textarea>
+					<label for="major_life_events">Major Life Events:</label>
+					<textarea id="major_life_events" name="major_life_events"></textarea>
+					<label for="regrets">Past Mistakes/Regrets:</label>
+					<textarea id="regrets" name="regrets"></textarea>
+					<label for="secrets">Secrets:</label>
+					<input type="text" id="secrets" name="secrets">
+					<label for="life_motto">Life Motto/Philosophy:</label>
+					<input type="text" id="life_motto" name="life_motto">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="values">
+					<legend>Worldview & Values</legend>
+					<label for="political_views">Political Views:</label>
+					<textarea id="political_views" name="political_views"></textarea>
+					<label for="value_of_self_vs_others">Value Of Self vs. Others:</label>
+					<input type="text" id="value_of_self_vs_others" name="value_of_self_vs_others">
+					<label for="level_of_compassion">Level of Compassion/Empathy:</label>
+					<input type="text" id="level_of_compassion" name="level_of_compassion">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="skills">
+					<legend>Skills/Abilities</legend>
+					<label for="talents">Special Talents:</label>
+					<input type="text" id="talents" name="talents">
+					<label for="powers">Magic/Powers/Supernatural Abilities:</label>
+					<textarea id="powers" name="powers" placeholder="What, why, when, where, how, max, min, etc."></textarea>
+					<label for="languages_spoken">Languages Spoken:</label>
+					<input type="text" id="languages_spoken" name="languages_spoken">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="favorites">
+					<legend>Favorites</legend>
+					<label for="food">Food:</label>
+					<input type="text" id="food" name="food">
+					<label for="drink">Drink:</label>
+					<input type="text" id="drink" name="drink">
+					<label for="color">Color:</label>
+					<input type="text" id="color" name="color">
+					<label for="literature">Book/Movie/TV Show/Music/Band:</label>
+					<input type="text" id="literature" name="literature">
+					<label for="genre">Genre:</label>
+					<input type="text" id="genre" name="genre">
+					<label for="place">Place:</label>
+					<input type="text" id="place" name="place">
+					<label for="animal">Animal:</label>
+					<input type="text" id="animal" name="animal">
+					<label for="season">Season:</label>
+					<input type="text" id="season" name="season">
+					<label for="quote">Quote:</label>
+					<input type="text" id="quote" name="quote">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="miscellaneous">
+					<legend>Miscellaneous</legend>
+					<label for="weakness">Biggest Weakness:</label>
+					<input type="text" id="weakness" name="weakness">
+					<label for="strength">Greatest Strength:</label>
+					<input type="text" id="strength" name="strength">
+					<label for="motivation">Motivation:</label>
+					<input type="text" id="motivation" name="motivation">
+					<label for="conflict">Conflict:</label>
+					<input type="text" id="conflict" name="conflict">
+					<label for="character_arc">Character Arc:</label>
+					<input type="text" id="character_arc" name="character_arc">
+				</fieldset>
+
+				<fieldset class="fieldset-group" data-section="trivia">
+					<legend>Trivia & Fun Facts</legend>
+					<label for="first_impression">First Impression People Get:</label>
+					<textarea id="first_impression" name="first_impression"></textarea>
+					<label for="embarrassing_memory">Most Embarrassing Memory:</label>
+					<textarea id="embarrassing_memory" name="embarrassing_memory"></textarea>
+					<label for="little_known_facts">Little Known Facts:</label>
+					<textarea id="little_known_facts" name="little_known_facts"></textarea>
+					<label for="daily_routine">Daily Routine:</label>
+					<textarea id="daily_routine" name="daily_routine"></textarea>
+					<label for="dream_job">Dream Job:</label>
+					<input type="text" id="dream_job" name="dream_job">
+					<label for="humor">Favorite Kind of Humor:</label>
+					<input type="text" id="humor" name="humor">
+				</fieldset><br><br>
+                
+                <button type="submit" class="button">Save</button>
+                <button type="button" class="button" onclick="closeModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <h2>Character Details</h2>
+            <div id="characterDetails"></div>
+            <button class="button" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let characters = JSON.parse(localStorage.getItem('characters')) || [];
+        let editingId = null;
+		let pendingDeleteId = null;
+
+		function confirmDelete(id) {
+			pendingDeleteId = id;
+			document.getElementById('deleteModal').style.display = 'block';
+		}
+
+		function deleteCharacter(id) {
+			if (id === null) return;
+			
+			characters = characters.filter(c => c.id !== id);
+			localStorage.setItem('characters', JSON.stringify(characters));
+			pendingDeleteId = null;
+			closeModal();
+			renderCharacters();
+		}
+    
+        function openCreateModal() {
+            editingId = null;
+            document.getElementById('characterForm').reset();
+            document.getElementById('formModal').style.display = 'block';
+        }
+    
+        function openEditModal(id) {
+            const character = characters.find(c => c.id === id);
+            editingId = id;
+            
+            const form = document.getElementById('characterForm');
+            for (const element of form.elements) {
+                if (element.name && character[element.name] !== undefined) {
+                    element.value = character[element.name];
+                }
+            }
+            
+            document.getElementById('formModal').style.display = 'block';
+        }
+
+		let currentSectionIndex = 0;
+		const sections = Array.from(document.querySelectorAll('fieldset'));
+
+		function showSection(index) {
+			sections.forEach((section, i) => {
+				section.classList.toggle('active', i === index);
+			});
+			currentSectionIndex = index;
+		}
+
+		document.querySelector('.nav-arrows').addEventListener('click', (e) => {
+			if (e.target.classList.contains('prev')) {
+				showSection(Math.max(0, currentSectionIndex - 1));
+			} else if (e.target.classList.contains('next')) {
+				showSection(Math.min(sections.length - 1, currentSectionIndex + 1));
+			}
+		});
+    
+        function viewCharacter(id) {
+			const character = characters.find(c => c.id === id);
+			let currentViewSection = 0;
+			const viewSections = [];
+			
+			// Group fields by section
+			sections.forEach(section => {
+				const sectionHTML = Array.from(section.elements)
+					.filter(el => el.name && character[el.name])
+					.map(el => `<p><strong>${el.labels[0].textContent}:</strong> ${character[el.name]}</p>`)
+					.join('');
+				
+				if (sectionHTML) {
+					viewSections.push(`
+						<div class="view-section">
+							<h3>${section.querySelector('legend').textContent}</h3>
+							${sectionHTML}
+						</div>
+					`);
+				}
+			});
+
+			const viewModal = document.getElementById('viewModal');
+			viewModal.innerHTML = `
+				<div class="modal-content">
+					<h2>Character Details</h2>
+					<div class="nav-arrows">
+						<div class="arrow prev">←</div>
+						<div class="arrow next">→</div>
+					</div>
+					<div id="characterDetails">
+						${viewSections[currentViewSection]}
+					</div>
+					<button class="button" onclick="closeModal()">Close</button>
+				</div>
+			`;
+
+			viewModal.querySelector('.nav-arrows').addEventListener('click', (e) => {
+				if (e.target.classList.contains('prev')) {
+					currentViewSection = Math.max(0, currentViewSection - 1);
+				} else if (e.target.classList.contains('next')) {
+					currentViewSection = Math.min(viewSections.length - 1, currentViewSection + 1);
+				}
+				document.getElementById('characterDetails').innerHTML = viewSections[currentViewSection];
+			});
+			
+			viewModal.style.display = 'block';
+		}
+    
+        function saveCharacter(event) {
+			event.preventDefault();
+			const form = event.target;
+			
+			const existingCharacter = editingId ? 
+				characters.find(c => c.id === editingId) : 
+				null;
+
+			const characterData = {
+				id: editingId || Date.now(),
+				createdAt: existingCharacter ? 
+					existingCharacter.createdAt :
+					new Date().toISOString()
+			};
+
+			for (const element of form.elements) {
+				if (element.name && element.name !== 'characterId' && element.type !== 'button') {
+					characterData[element.name] = element.value;
+				}
+			}
+
+			if (editingId) {
+				const index = characters.findIndex(c => c.id === editingId);
+				characters[index] = characterData;
+			} else {
+				characters.push(characterData);
+			}
+
+			localStorage.setItem('characters', JSON.stringify(characters));
+			closeModal();
+			renderCharacters();
+		}
+    
+        function deleteCharacter(id) {
+            characters = characters.filter(c => c.id !== id);
+            localStorage.setItem('characters', JSON.stringify(characters));
+            renderCharacters();
+        }
+    
+        function renderCharacters() {
+			const container = document.getElementById('charactersContainer');
+			container.innerHTML = '';
+			
+			characters.forEach(character => {
+
+				const createdDate = character.createdAt ? 
+					new Date(character.createdAt) : 
+					new Date();
+				
+				const card = document.createElement('div');
+				card.className = 'character-card';
+				card.innerHTML = `
+					<div class="pfp-container">
+						${character.pfp ? `<img src="${character.pfp}" class="pfp-image" style="display: block">` : ''}
+						<input type="file" class="pfp-upload" accept="image/*" 
+							onchange="uploadPfp(event, ${character.id})">
+					</div>
+					
+					<div class="card-content">
+						<h3>${character.name || 'Unnamed Character'}</h3>
+						<p>${character.au ? `AU: ${character.au}` : ''}</p>
+						<small>Created: ${createdDate.toLocaleDateString()}</small>
+						<button onclick="viewCharacter(${character.id})">View</button>
+						<button onclick="openEditModal(${character.id})">Edit</button>
+						<button onclick="confirmDelete(${character.id})">Delete</button>
+					</div>
+				`;
+				container.appendChild(card);
+			});
+		}
+
+		function uploadPfp(event, characterId) {
+			const file = event.target.files[0];
+			if (!file) return;
+
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				const character = characters.find(c => c.id === characterId);
+				character.pfp = e.target.result;
+				localStorage.setItem('characters', JSON.stringify(characters));
+				renderCharacters();
+			};
+			reader.readAsDataURL(file);
+		}
+    
+
+		document.querySelectorAll('.modal').forEach(modal => {
+			modal.addEventListener('click', function(event) {
+				if (event.target === modal) {
+					closeModal();
+				}
+			});
+    	});
+
+		function closeModal() {
+			document.querySelectorAll('.modal').forEach(modal => {
+				modal.style.display = 'none';
+			});
+		}
+
+        renderCharacters();
+    </script>
 </body>
-
 </html>
