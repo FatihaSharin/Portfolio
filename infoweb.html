@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InfoWeb - Information Manager</title>
+    <link href="https://fonts.googleapis.com/css?family=Whitney:400,500,600" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #1abc9c;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --card-bg: #34495e;
+            --text: #ecf0f1;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Whitney', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a2530 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background-color: rgba(26, 37, 48, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo a {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.4rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            width: 250px;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.3);
+            width: 300px;
+        }
+
+        .search-container button {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .add-category-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .add-category-btn:hover {
+            background: #16a085;
+            transform: translateY(-2px);
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .category {
+            background: rgba(26, 37, 48, 0.5);
+            border-radius: 15px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+        }
+
+        .category:hover {
+            border-color: rgba(26, 188, 156, 0.2);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: rgba(26, 37, 48, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .category-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .add-card-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-card-btn:hover {
+            background: #2980b9;
+        }
+
+        .delete-category-btn {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 8px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .delete-category-btn:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        .category-form {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-form input {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            font-size: 1rem;
+            width: 300px;
+            transition: var(--transition);
+        }
+
+        .category-form input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.3);
+        }
+
+        .category-form button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-form button:hover {
+            background: #2980b9;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(26, 188, 156, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+
+        .card-input-group {
+            margin-bottom: 15px;
+        }
+
+        .card-input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: #95a5a6;
+        }
+
+        .card-input-group input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .card-input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.2);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .save-btn:hover {
+            background: #16a085;
+        }
+
+        .delete-btn {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 6px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-btn:hover {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: rgba(127, 140, 141, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .search-container input {
+                width: 100%;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .category-controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .category-form {
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+            
+            .category-form input {
+                width: 100%;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="#"><i class="fas fa-cube"></i> InfoWeb</a>
+            </div>
+            <div class="header-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search cards...">
+                    <button type="submit" id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <button class="add-category-btn" id="new-category">
+                    <i class="fas fa-plus"></i> New Category
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- Categories will be dynamically added here -->
+    </main>
+
+    <script>
+        // State management
+        let state = {
+            categories: [
+                {
+                    id: 1,
+                    title: "General",
+                    cards: [
+                        {
+                            id: 1,
+                            name: "Example Card",
+                            description: "This is an example card. You can edit this text."
+                        }
+                    ]
+                }
+            ],
+            nextCategoryId: 2,
+            nextCardId: 2
+        };
+
+        // DOM elements
+        const mainContent = document.getElementById('main-content');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const newCategoryBtn = document.getElementById('new-category');
+
+        // Initialize the app
+        function initApp() {
+            loadState();
+            renderCategories();
+            setupEventListeners();
+        }
+
+        // Load state from localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('infowebState');
+            if (savedState) {
+                state = JSON.parse(savedState);
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('infowebState', JSON.stringify(state));
+        }
+
+        // Render all categories and cards
+        function renderCategories() {
+            mainContent.innerHTML = '';
+            
+            if (state.categories.length === 0) {
+                mainContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Categories Found</h3>
+                        <p>Create your first category using the "Add New" button</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            state.categories.forEach(category => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = 'category';
+                categoryElement.dataset.categoryId = category.id;
+                
+                categoryElement.innerHTML = `
+                    <div class="category-header">
+                        <h2 class="category-title">${category.title}</h2>
+                        <div class="category-controls">
+                            <button class="add-card-btn" data-category-id="${category.id}">
+                                <i class="fas fa-plus"></i> Add Card
+                            </button>
+                            <button class="delete-category-btn" data-category-id="${category.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                            <form class="category-form" data-category-id="${category.id}">
+                                <input type="text" class="category-input" placeholder="Category name" value="${category.title}">
+                                <button type="submit">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="cards-container" data-category-id="${category.id}">
+                        ${category.cards.length > 0 ? 
+                            category.cards.map(card => renderCard(card)).join('') : 
+                            `<div class="empty-state">
+                                <i class="fas fa-id-card"></i>
+                                <p>No cards in this category</p>
+                            </div>`
+                        }
+                    </div>
+                `;
+                
+                mainContent.appendChild(categoryElement);
+                
+                // Add event listeners to the newly created elements
+                const form = categoryElement.querySelector('.category-form');
+                form.addEventListener('submit', handleCategoryTitleUpdate);
+                
+                const addCardBtn = categoryElement.querySelector('.add-card-btn');
+                addCardBtn.addEventListener('click', () => addNewCard(category.id));
+                
+                const deleteCategoryBtn = categoryElement.querySelector('.delete-category-btn');
+                deleteCategoryBtn.addEventListener('click', () => deleteCategory(category.id));
+                
+                category.cards.forEach(card => {
+                    const cardElement = categoryElement.querySelector(`.card[data-card-id="${card.id}"]`);
+                    if (cardElement) {
+                        const saveNameBtn = cardElement.querySelector('.save-name');
+                        const saveDesBtn = cardElement.querySelector('.save-des');
+                        const deleteBtn = cardElement.querySelector('.delete-btn');
+                        const nameInput = cardElement.querySelector('.name-input');
+                        const desInput = cardElement.querySelector('.des-input');
+                        
+                        saveNameBtn.addEventListener('click', () => handleCardNameUpdate(category.id, card.id));
+                        saveDesBtn.addEventListener('click', () => handleCardDescriptionUpdate(category.id, card.id));
+                        deleteBtn.addEventListener('click', () => deleteCard(category.id, card.id));
+                        
+                        // Add Enter key support for saving
+                        nameInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCardNameUpdate(category.id, card.id);
+                            }
+                        });
+                        
+                        desInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') {
+                                handleCardDescriptionUpdate(category.id, card.id);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        // Render a single card
+        function renderCard(card) {
+            return `
+                <div class="card" data-card-id="${card.id}">
+                    <h2>${card.name}</h2>
+                    <p>${card.description}</p>
+                    
+                    <div class="card-input-group">
+                        <label>Card Name</label>
+                        <input type="text" class="name-input" value="${card.name}" placeholder="Enter name">
+                    </div>
+                    
+                    <div class="card-input-group">
+                        <label>Description</label>
+                        <input type="text" class="des-input" value="${card.description}" placeholder="Enter description">
+                    </div>
+                    
+                    <div class="card-actions">
+                        <button class="save-btn save-name">Save Name</button>
+                        <button class="save-btn save-des">Save Description</button>
+                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Add new category
+            newCategoryBtn.addEventListener('click', addNewCategory);
+            
+            // Live search functionality
+            searchInput.addEventListener('input', performSearch);
+            
+            // Search button as fallback
+            searchBtn.addEventListener('click', performSearch);
+        }
+
+        // Add a new category
+        function addNewCategory() {
+            const newCategory = {
+                id: state.nextCategoryId++,
+                title: `New Category ${state.nextCategoryId - 1}`,
+                cards: []
+            };
+            
+            state.categories.push(newCategory);
+            saveState();
+            renderCategories();
+            
+            // Scroll to the new category
+            setTimeout(() => {
+                const newCategoryElement = document.querySelector(`.category[data-category-id="${newCategory.id}"]`);
+                if (newCategoryElement) {
+                    newCategoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        // Delete a category
+        function deleteCategory(categoryId) {
+            if (confirm('Are you sure you want to delete this category and all its cards?')) {
+                state.categories = state.categories.filter(c => c.id !== categoryId);
+                saveState();
+                renderCategories();
+            }
+        }
+
+        // Add a new card to a specific category
+        function addNewCard(categoryId) {
+            const category = state.categories.find(c => c.id === categoryId);
+            
+            if (category) {
+                const newCard = {
+                    id: state.nextCardId++,
+                    name: "New Card",
+                    description: "Add your description here"
+                };
+                
+                category.cards.push(newCard);
+                saveState();
+                renderCategories();
+                
+                // Scroll to the new card
+                setTimeout(() => {
+                    const newCardElement = document.querySelector(`.card[data-card-id="${newCard.id}"]`);
+                    if (newCardElement) {
+                        newCardElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            }
+        }
+
+        // Update category title
+        function handleCategoryTitleUpdate(e) {
+            e.preventDefault();
+            const categoryId = parseInt(e.target.dataset.categoryId);
+            const input = e.target.querySelector('.category-input');
+            const newTitle = input.value.trim();
+            
+            if (newTitle) {
+                const category = state.categories.find(c => c.id === categoryId);
+                if (category) {
+                    category.title = newTitle;
+                    saveState();
+                    renderCategories();
+                }
+            }
+        }
+
+        // Update card name
+        function handleCardNameUpdate(categoryId, cardId) {
+            const cardElement = document.querySelector(`.card[data-card-id="${cardId}"]`);
+            if (!cardElement) return;
+            
+            const input = cardElement.querySelector('.name-input');
+            const newName = input.value.trim();
+            
+            if (newName) {
+                const category = state.categories.find(c => c.id === categoryId);
+                if (category) {
+                    const card = category.cards.find(c => c.id === cardId);
+                    if (card) {
+                        card.name = newName;
+                        saveState();
+                        
+                        // Update only the card name element for better performance
+                        const nameElement = cardElement.querySelector('h2');
+                        if (nameElement) {
+                            nameElement.textContent = newName;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Update card description
+        function handleCardDescriptionUpdate(categoryId, cardId) {
+            const cardElement = document.querySelector(`.card[data-card-id="${cardId}"]`);
+            if (!cardElement) return;
+            
+            const input = cardElement.querySelector('.des-input');
+            const newDes = input.value.trim();
+            
+            if (newDes) {
+                const category = state.categories.find(c => c.id === categoryId);
+                if (category) {
+                    const card = category.cards.find(c => c.id === cardId);
+                    if (card) {
+                        card.description = newDes;
+                        saveState();
+                        
+                        // Update only the description element for better performance
+                        const desElement = cardElement.querySelector('p');
+                        if (desElement) {
+                            desElement.textContent = newDes;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Delete a card
+        function deleteCard(categoryId, cardId) {
+            const category = state.categories.find(c => c.id === categoryId);
+            if (category) {
+                category.cards = category.cards.filter(card => card.id !== cardId);
+                saveState();
+                renderCategories();
+            }
+        }
+
+        // Search functionality
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                // Reset view if search is empty
+                state.categories.forEach(category => {
+                    const categoryElement = document.querySelector(`.category[data-category-id="${category.id}"]`);
+                    if (categoryElement) {
+                        categoryElement.style.display = 'block';
+                        
+                        const cardsContainer = categoryElement.querySelector('.cards-container');
+                        if (cardsContainer) {
+                            const cards = cardsContainer.querySelectorAll('.card');
+                            cards.forEach(card => {
+                                card.style.display = 'block';
+                            });
+                        }
+                    }
+                });
+                return;
+            }
+            
+            state.categories.forEach(category => {
+                const categoryElement = document.querySelector(`.category[data-category-id="${category.id}"]`);
+                if (!categoryElement) return;
+                
+                let hasVisibleCards = false;
+                const cardsContainer = categoryElement.querySelector('.cards-container');
+                
+                if (cardsContainer) {
+                    const cards = cardsContainer.querySelectorAll('.card');
+                    cards.forEach(cardElement => {
+                        const cardId = parseInt(cardElement.dataset.cardId);
+                        const card = category.cards.find(c => c.id === cardId);
+                        
+                        if (card) {
+                            const cardContent = (card.name + " " + card.description).toLowerCase();
+                            if (cardContent.includes(searchTerm)) {
+                                cardElement.style.display = 'block';
+                                hasVisibleCards = true;
+                            } else {
+                                cardElement.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+                
+                // Hide category if no visible cards
+                categoryElement.style.display = hasVisibleCards ? 'block' : 'none';
+            });
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
