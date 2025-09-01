@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Fruitful Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles & Variables */
+        :root {
+            /* Dark Theme (Default) */
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --text-primary: #f5f5f5;
+            --text-secondary: #b0b0b0;
+            --accent: #fc8686;
+            --accent-light: #ffb4b4;    
+            --accent-dark: #ea6767;
+            --header-bg: rgba(30, 30, 30, 0.85);
+            --card-bg: rgba(40, 40, 40, 0.6);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --transition: all 0.3s ease;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 12px;
+            --section-spacing: 80px;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #f9f7f7;
+            --bg-secondary: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent: #4a6fa5;
+            --accent-light: #6d8ec6;
+            --accent-dark: #2e4d7e;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Sour Theme */
+        [data-theme="sour"] {
+            --bg-primary: #837CC0;
+            --bg-secondary: #9C9AD9;
+            --text-primary: #262626;
+            --text-secondary: #2c094f;
+            --accent: #e7b8b8;
+            --accent-light: #b8b6ff;
+            --accent-dark: #261F42;
+            --header-bg: rgba(255, 240, 249, 0.85);
+            --card-bg: rgba(189, 169, 247, 0.7);
+            --card-shadow: 0 4px 20px rgba(224, 187, 228, 0.3);
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            transition: var(--transition);
+            min-height: 100vh;
+            padding-top: 70px;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .user-select{
+            user-select: none;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent-light);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .theme-switcher {
+            position: relative;
+        }
+
+        .theme-btn {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .theme-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .theme-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 10px;
+            width: 180px;
+            box-shadow: var(--card-shadow);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .theme-options.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-option i {
+            font-size: 1.2rem;
+        }
+
+        .theme-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .theme-name {
+            flex: 1;
+        }
+
+        /* Section Styles */
+        section {
+            padding: var(--section-spacing) 5%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* Hero Section */
+        #hero {
+            text-align: center;
+            padding-top: 120px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-title span {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(187, 134, 252, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(187, 134, 252, 0.1);
+            transform: translateY(-3px);
+        }
+
+        /* About Section */
+        #about {
+            background: var(--bg-secondary);
+        }
+
+        .about-content {
+            display: flex;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .skill {
+            background: var(--card-bg);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .skill:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-3px);
+        }
+
+        .about-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .profile-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(187, 134, 252, 0.3);
+        }
+
+        .profile-placeholder {
+            font-size: 8rem;
+            color: var(--bg-primary);
+        }
+
+        /* Projects & Desserts Sections */
+        #projects, #desserts {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-img {
+            height: 200px;
+            background: var(--accent);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--bg-primary);
+            font-size: 3rem;
+        }
+
+        .card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        .card-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .card-link:hover {
+            color: var(--accent-light);
+            gap: 12px;
+        }
+
+        /* Contact Section */
+        #contact {
+            background: var(--bg-secondary);
+        }
+
+        .contact-container {
+            display: flex;
+            gap: 50px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--bg-primary);
+            font-size: 1.2rem;
+        }
+
+        .contact-text h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .contact-text p {
+            color: var(--text-secondary);
+        }
+
+        .contact-form {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: var(--bg-primary);
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 5%;
+            background: var(--bg-primary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .about-content, .contact-container {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+                margin-bottom: 40px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark" class="user-select">
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-code"></i>
+            <span>DevPortfolio</span>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#hero" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About Me</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <!-- <li><a href="#desserts" class="nav-link">Desserts</a></li> -->
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="theme-switcher">
+            <button class="theme-btn" id="themeToggle">
+                <i class="fas fa-palette"></i>
+                Theme
+            </button>
+            <div class="theme-options" id="themeOptions">
+                <div class="theme-option" data-theme="dark">
+                    <div class="theme-indicator" style="background: #bb86fc;"></div>
+                    <div class="theme-name">Dark Mode</div>
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="theme-option" data-theme="light">
+                    <div class="theme-indicator" style="background: #4a6fa5;"></div>
+                    <div class="theme-name">Light Mode</div>
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="theme-option" data-theme="sour">
+                    <div class="theme-indicator" style="background: #e0bbe4;"></div>
+                    <div class="theme-name">SOUR Mode</div>
+                    <i class="fas fa-music"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Hi, I'm <span>Fatiha Sharin</span></h1>
+            <h2 class="hero-subtitle">Humble Kiddie Programmer</h2>
+            <p class="hero-description">
+                I build projects that interest me and others. If it's not fun and creative, it's not practical.
+            </p>
+            <div class="hero-btns">
+                <a href="#projects">
+                    <button class="btn btn-primary">View Projects</button>
+                </a>
+                <a href="#contact">
+                    <button class="btn btn-secondary">Contact Me</button>
+                </a>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Crafting Digital Experiences</h3>
+                <p>
+                    With about 4 years of experience in web development and project building, I specialize in creating responsive, 
+                    user-friendly websites and projects. My journey began with a passion for solving 
+                    complex problems through elegant code.
+                </p>
+                <p>
+                    I want to create magic with code, turn people's imaginations into reality, and make the web a more beautiful place for myself and all the other youngstars. After all, coding it is more easier than drawing, right?
+                </p>
+                <div class="skills">
+                    <div class="skill">JavaScript</div>
+                    <div class="skill">C</div>
+                    <div class="skill">C++</div>
+                    <div class="skill">Python</div>
+                    <div class="skill">UI/UX Design</div>
+                    <div class="skill">Responsive Design</div>
+                    <div class="skill">SQL</div>
+                    <div class="skill">Web Development</div>
+                </div>
+            </div>
+            <div class="about-image">
+                <div class="profile-container">
+                    <div class="profile-placeholder">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <h2 class="section-title">My Projects</h2>
+        <div class="gallery">
+            <!-- Project 1 -->
+            <div class="card">
+                <div class="card-img">
+                    <i class="fa-regular fa-address-book"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Character Profile Web</h3>
+                    <p class="card-desc">
+                        A website inspired by writer's needs to create and manage character profiles for stories.
+                    </p>
+                    <a href="https://fatihasharin.github.io/CharacterProfile/" class="card-link" target="_blank" rel="noopener noreferrer">
+                        View Project <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Project 2 -->
+            <div class="card">
+                <div class="card-img">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">InfoWeb</h3>
+                    <p class="card-desc">
+                        A website to store and manage personal information securely in local storage.
+                    </p>
+                    <a href="https://fatihasharin.github.io/InfoWeb/" class="card-link" target="_blank" rel="noopener noreferrer">
+                        View Project <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Project 3 -->
+            <div class="card">
+                <div class="card-img">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Quizzz Website</h3>
+                    <p class="card-desc">
+                        A fun webpage for taking quizzes and tracking scores.
+                    </p>
+                    <a href="https://fatihasharin.github.io/Quizzz/" class="card-link" target="_blank" rel="noopener noreferrer">
+                        View Project <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Let's Connect</h3>
+                
+                <div class="contact-detail">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>Email</h4>
+                        <p>mariumazim999@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-detail">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>Phone</h4>
+                        <p>+880 1719245822</p>
+                    </div>
+                </div>
+                
+                <div class="contact-detail">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <h4>Location</h4>
+                        <p>Dhaka-1216, Dhaka, Bangladesh</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <form id="contactForm" method="POST" action="https://formspree.io/f/xjkeoenn">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" class="form-control" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="social-links">
+            <a href="https://github.com/FatihaSharin" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/fatiha-sharin-53a903267/" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://www.facebook.com/marium.arakhukhmoni/" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.youtube.com/@mariumazim6296" class="social-link" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
+        <p class="copyright">© 2025 Fatiha Sharin. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Theme Switching Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeOptions = document.getElementById('themeOptions');
+            const themeOptionItems = document.querySelectorAll('.theme-option');
+            const body = document.body;
+            
+            // Load saved theme from localStorage or default to dark
+            const savedTheme = localStorage.getItem('portfolioTheme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+            
+            // Highlight the current theme in the dropdown
+            document.querySelectorAll('.theme-option').forEach(option => {
+                if (option.getAttribute('data-theme') === savedTheme) {
+                    option.classList.add('active-theme');
+                }
+            });
+            
+            // Toggle theme options visibility
+            themeToggle.addEventListener('click', function() {
+                themeOptions.classList.toggle('active');
+            });
+            
+            // Change theme when an option is selected
+            themeOptionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const theme = this.getAttribute('data-theme');
+                    body.setAttribute('data-theme', theme);
+                    localStorage.setItem('portfolioTheme', theme);
+                    
+                    // Update active theme indicator
+                    themeOptionItems.forEach(opt => opt.classList.remove('active-theme'));
+                    this.classList.add('active-theme');
+                    
+                    // Close the dropdown
+                    themeOptions.classList.remove('active');
+                });
+            });
+            
+            // Close theme dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!themeToggle.contains(e.target) && !themeOptions.contains(e.target)) {
+                    themeOptions.classList.remove('active');
+                }
+            });
+            
+            // Smooth scrolling for navigation
+            document.querySelectorAll('.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    
+                    // Check if the link is an internal link (starts with #) because previously it detected ALL the links of the page as an internal link
+                    if (this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        
+                        const targetId = this.getAttribute('href');
+                        const targetSection = document.querySelector(targetId);
+                        
+                        if (targetSection) {
+                            window.scrollTo({
+                                top: targetSection.offsetTop - 60,
+                                behavior: 'smooth'
+                            });
+                            // Close theme dropdown if open
+                            const themeOptions = document.getElementById('themeOptions');
+                            if (themeOptions) {
+                                themeOptions.classList.remove('active');
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Add subtle animations to elements when they enter viewport
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe sections
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('fade-in');
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
